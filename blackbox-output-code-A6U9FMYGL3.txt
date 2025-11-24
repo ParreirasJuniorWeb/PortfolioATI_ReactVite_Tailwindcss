@@ -1,0 +1,864 @@
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '/components/ui/card';
+import { Button } from '/components/ui/button';
+import { Input } from '/components/ui/input';
+import { Textarea } from '/components/ui/textarea';
+import { Label } from '/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '/components/ui/select';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { Download, Mail, Phone, Settings, Users, FileText, TrendingUp, MessageCircle, Shield, Network, Headphones, Folder } from 'lucide-react';
+
+const Portfolio = () => {
+  const [activeSection, setActiveSection] = useState('home');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    position: '',
+    sector: '',
+    superintendent: '',
+    issue: '',
+    description: ''
+  });
+
+  // Dados para gráficos
+  const chamadosData = [
+    { mes: 'Jan', chamados: 45, resolvidos: 42 },
+    { mes: 'Fev', chamados: 52, resolvidos: 48 },
+    { mes: 'Mar', chamados: 38, resolvidos: 35 },
+    { mes: 'Abr', chamados: 61, resolvidos: 58 },
+    { mes: 'Mai', chamados: 55, resolvidos: 52 },
+    { mes: 'Jun', chamados: 48, resolvidos: 46 }
+  ];
+
+  const categoriasData = [
+    { name: 'Hardware', value: 35, color: '#1e40af' },
+    { name: 'Software', value: 28, color: '#3b82f6' },
+    { name: 'Rede', value: 20, color: '#60a5fa' },
+    { name: 'Segurança', value: 17, color: '#93c5fd' }
+  ];
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Simulação de envio de email
+    const emailBody = `
+      Nome: ${formData.name}
+      Email: ${formData.email}
+      Telefone: ${formData.phone}
+      Cargo: ${formData.position}
+      Setor: ${formData.sector}
+      Superintendência: ${formData.superintendent}
+      Tipo de Problema: ${formData.issue}
+      
+      Descrição:
+      ${formData.description}
+    `;
+
+    // Em produção, aqui seria feita a integração real com o backend
+    console.log('Enviando para: suporteti.ca@saude.mg.gov.br, central@positivo.com.br');
+    console.log('Conteúdo:', emailBody);
+    
+    alert('Chamado enviado com sucesso! Nossa equipe entrará em contato em breve.');
+    
+    // Reset do formulário
+    setFormData({
+      name: '', email: '', phone: '', position: '', sector: '', 
+      superintendent: '', issue: '', description: ''
+    });
+  };
+
+  const tutoriais = [
+    {
+      icon: <Shield className="w-8 h-8 text-blue-600" />,
+      title: "Configuração de VPN",
+      description: "Aprenda a configurar e usar a VPN institucional para acesso remoto seguro.",
+      steps: [
+        "Baixe o cliente VPN Cisco AnyConnect",
+        "Configure o servidor: vpn.saude.mg.gov.br",
+        "Insira suas credenciais institucionais",
+        "Teste a conexão"
+      ]
+    },
+    {
+      icon: <Headphones className="w-8 h-8 text-blue-600" />,
+      title: "Cisco Jabber",
+      description: "Configure o Cisco Jabber para telefonia e mensagens instantâneas.",
+      steps: [
+        "Instale o Cisco Jabber do Portal de Software",
+        "Configure o servidor: jabber.saude.mg.gov.br",
+        "Faça login com suas credenciais",
+        "Configure áudio e vídeo"
+      ]
+    },
+    {
+      icon: <Mail className="w-8 h-8 text-blue-600" />,
+      title: "Abertura de Chamados",
+      description: "Como abrir chamados de suporte por e-mail e telefone.",
+      steps: [
+        "E-mail: suporteti.ca@saude.mg.gov.br",
+        "Telefone: (31) 3916-0123",
+        "Descreva detalhadamente o problema",
+        "Informe localização e urgência"
+      ]
+    },
+    {
+      icon: <Folder className="w-8 h-8 text-blue-600" />,
+      title: "Acesso a Pastas de Rede",
+      description: "Solicite acesso a pastas compartilhadas e caixas de e-mail.",
+      steps: [
+        "Preencha formulário de solicitação",
+        "Aprovação do gestor imediato",
+        "Análise da equipe de segurança",
+        "Liberação do acesso"
+      ]
+    }
+  ];
+
+  const pops = [
+    { title: "POP 001 - Instalação de Software", category: "Software", date: "15/06/2024" },
+    { title: "POP 002 - Backup de Dados", category: "Segurança", date: "10/06/2024" },
+    { title: "POP 003 - Configuração de Impressora", category: "Hardware", date: "05/06/2024" },
+    { title: "POP 004 - Reset de Senha", category: "Segurança", date: "01/06/2024" }
+  ];
+
+  const blogPosts = [
+    {
+      title: "Nova Política de Segurança da Informação",
+      category: "Segurança",
+      date: "20/06/2024",
+      excerpt: "Conheça as novas diretrizes de segurança implementadas para proteger os dados institucionais."
+    },
+    {
+      title: "Atualização do Sistema de Chamados",
+      category: "Sistema",
+      date: "18/06/2024",
+      excerpt: "O sistema de abertura de chamados recebeu melhorias para agilizar o atendimento."
+    },
+    {
+      title: "Treinamento: Microsoft 365",
+      category: "Capacitação",
+      date: "15/06/2024",
+      excerpt: "Participe do treinamento sobre as funcionalidades do Microsoft 365 para aumentar sua produtividade."
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">TI SES-MG</h1>
+                <p className="text-sm text-gray-600">Cidade Administrativa</p>
+              </div>
+            </div>
+            
+            <nav className="hidden md:flex space-x-8">
+              <button 
+                onClick={() => setActiveSection('home')}
+                className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${activeSection === 'home' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:text-blue-600'}`}
+              >
+                Início
+              </button>
+              <button 
+                onClick={() => setActiveSection('tutorials')}
+                className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${activeSection === 'tutorials' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:text-blue-600'}`}
+              >
+                Tutoriais
+              </button>
+              <button 
+                onClick={() => setActiveSection('contact')}
+                className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${activeSection === 'contact' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:text-blue-600'}`}
+              >
+                Contato
+              </button>
+              <button 
+                onClick={() => setActiveSection('downloads')}
+                className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${activeSection === 'downloads' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:text-blue-600'}`}
+              >
+                Downloads
+              </button>
+              <button 
+                onClick={() => setActiveSection('dashboard')}
+                className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${activeSection === 'dashboard' ? 'bg-blue-100 text-blue-700' : 'text-gray-700 hover:text-blue-600'}`}
+              >
+                Dashboard
+              </button>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Home Section */}
+        {activeSection === 'home' && (
+          <div className="space-y-8">
+            {/* Hero Section */}
+            <div className="text-center py-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl text-white">
+              <h2 className="text-4xl font-bold mb-4">Portal de TI - SES-MG</h2>
+              <p className="text-xl mb-8 max-w-3xl mx-auto">
+                Bem-vindo ao portal de Tecnologia da Informação da Secretaria de Estado de Saúde de Minas Gerais. 
+                Aqui você encontra tutoriais, suporte e recursos para otimizar seu trabalho.
+              </p>
+              <Button 
+                onClick={() => setActiveSection('tutorials')} 
+                className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
+              >
+                Explorar Recursos
+              </Button>
+            </div>
+
+            {/* Quick Access Cards */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveSection('tutorials')}>
+                <CardHeader className="pb-3">
+                  <Settings className="w-8 h-8 text-blue-600 mb-2" />
+                  <CardTitle className="text-lg">Tutoriais</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">Guias passo a passo para configurações e procedimentos</p>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveSection('contact')}>
+                <CardHeader className="pb-3">
+                  <Phone className="w-8 h-8 text-blue-600 mb-2" />
+                  <CardTitle className="text-lg">Suporte</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">Abra chamados e entre em contato com nossa equipe</p>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveSection('downloads')}>
+                <CardHeader className="pb-3">
+                  <Download className="w-8 h-8 text-blue-600 mb-2" />
+                  <CardTitle className="text-lg">Downloads</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">POPs, manuais e documentações técnicas</p>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveSection('dashboard')}>
+                <CardHeader className="pb-3">
+                  <TrendingUp className="w-8 h-8 text-blue-600 mb-2" />
+                  <CardTitle className="text-lg">Dashboard</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600">Relatórios e métricas do setor de TI</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Latest Updates */}
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    <span>Últimas Atualizações</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {blogPosts.slice(0, 3).map((post, index) => (
+                    <div key={index} className="border-l-4 border-blue-500 pl-4">
+                      <h3 className="font-semibold text-gray-900">{post.title}</h3>
+                      <p className="text-sm text-gray-600 mb-1">{post.excerpt}</p>
+                      <span className="text-xs text-blue-600 font-medium">{post.date}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <Users className="w-5 h-5 text-blue-600" />
+                    <span>Contatos Rápidos</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <Mail className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium">E-mail Suporte</p>
+                      <p className="text-sm text-gray-600">suporteti.ca@saude.mg.gov.br</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Phone className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium">Telefone</p>
+                      <p className="text-sm text-gray-600">(31) 3916-0123</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <MessageCircle className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium">Chat Online</p>
+                      <p className="text-sm text-gray-600">Disponível 24/7 via Chat Volt</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* Tutorials Section */}
+        {activeSection === 'tutorials' && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Tutoriais e Autoatendimento</h2>
+              <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                Guias detalhados para configurações, instalações e procedimentos comuns do dia a dia.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+              {tutoriais.map((tutorial, index) => (
+                <Card key={index} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center space-x-3 mb-3">
+                      {tutorial.icon}
+                      <CardTitle className="text-xl">{tutorial.title}</CardTitle>
+                    </div>
+                    <p className="text-gray-600">{tutorial.description}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <ol className="space-y-2">
+                      {tutorial.steps.map((step, stepIndex) => (
+                        <li key={stepIndex} className="flex items-start space-x-3">
+                          <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                            {stepIndex + 1}
+                          </span>
+                          <span className="text-gray-700">{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    <Button className="w-full mt-6 bg-blue-600 hover:bg-blue-700">
+                      Ver Tutorial Completo
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Contact Section */}
+        {activeSection === 'contact' && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Central de Atendimento</h2>
+              <p className="text-lg text-gray-600">
+                Precisa de ajuda? Abra um chamado e nossa equipe irá auxiliá-lo.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Abertura de Chamado</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleFormSubmit} className="space-y-6">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="name">Nome Completo *</Label>
+                          <Input
+                            id="name"
+                            type="text"
+                            required
+                            value={formData.name}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="email">E-mail Institucional *</Label>
+                          <Input
+                            id="email"
+                            type="email"
+                            required
+                            value={formData.email}
+                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="phone">Telefone</Label>
+                          <Input
+                            id="phone"
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="position">Cargo</Label>
+                          <Input
+                            id="position"
+                            type="text"
+                            value={formData.position}
+                            onChange={(e) => setFormData({...formData, position: e.target.value})}
+                            className="mt-1"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="sector">Setor</Label>
+                          <Input
+                            id="sector"
+                            type="text"
+                            value={formData.sector}
+                            onChange={(e) => setFormData({...formData, sector: e.target.value})}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="superintendent">Superintendência</Label>
+                          <Select value={formData.superintendent} onValueChange={(value) => setFormData({...formData, superintendent: value})}>
+                            <SelectTrigger className="mt-1">
+                              <SelectValue placeholder="Selecione..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="vigilancia">Vigilância em Saúde</SelectItem>
+                              <SelectItem value="assistencia">Assistência à Saúde</SelectItem>
+                              <SelectItem value="regulacao">Regulação da Atenção à Saúde</SelectItem>
+                              <SelectItem value="ouvidoria">Ouvidoria-Geral</SelectItem>
+                              <SelectItem value="planejamento">Planejamento e Gestão</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="issue">Tipo de Problema *</Label>
+                        <Select value={formData.issue} onValueChange={(value) => setFormData({...formData, issue: value})} required>
+                          <SelectTrigger className="mt-1">
+                            <SelectValue placeholder="Selecione o tipo de problema..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hardware">Hardware</SelectItem>
+                            <SelectItem value="software">Software</SelectItem>
+                            <SelectItem value="rede">Rede/Conectividade</SelectItem>
+                            <SelectItem value="email">E-mail</SelectItem>
+                            <SelectItem value="impressora">Impressora</SelectItem>
+                            <SelectItem value="acesso">Acesso/Permissões</SelectItem>
+                            <SelectItem value="outros">Outros</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="description">Descrição do Problema *</Label>
+                        <Textarea
+                          id="description"
+                          required
+                          value={formData.description}
+                          onChange={(e) => setFormData({...formData, description: e.target.value})}
+                          placeholder="Descreva detalhadamente o problema, incluindo quando começou, mensagens de erro e o que estava fazendo quando ocorreu..."
+                          className="mt-1 h-32"
+                        />
+                      </div>
+
+                      <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-lg py-3">
+                        Enviar Chamado
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Outras Formas de Contato</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Mail className="w-5 h-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium">E-mail</p>
+                        <p className="text-sm text-gray-600">suporteti.ca@saude.mg.gov.br</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Phone className="w-5 h-5 text-blue-600" />
+                      <div>
+                        <p className="font-medium">Telefone</p>
+                        <p className="text-sm text-gray-600">(31) 3916-0123</p>
+                        <p className="text-xs text-gray-500">Segunda a Sexta: 8h às 18h</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Horário de Atendimento</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Segunda a Sexta:</span>
+                        <span className="font-medium">8h às 18h</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Sábados:</span>
+                        <span className="font-medium">8h às 12h</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Domingos:</span>
+                        <span className="text-red-600">Fechado</span>
+                      </div>
+                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-xs text-blue-700">
+                          Para emergências fora do horário comercial, utilize o chat online disponível 24/7.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Downloads Section */}
+        {activeSection === 'downloads' && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Downloads e Documentação</h2>
+              <p className="text-lg text-gray-600">
+                POPs, manuais e documentações técnicas para download.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Procedimentos Operacionais Padrão (POPs)</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {pops.map((pop, index) => (
+                        <div key={index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center space-x-3">
+                            <FileText className="w-6 h-6 text-blue-600" />
+                            <div>
+                              <h3 className="font-medium text-gray-900">{pop.title}</h3>
+                              <p className="text-sm text-gray-600">Categoria: {pop.category} • {pop.date}</p>
+                            </div>
+                          </div>
+                          <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                            <Download className="w-4 h-4 mr-2" />
+                            Download
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>Blog de Atualizações</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-6">
+                      {blogPosts.map((post, index) => (
+                        <article key={index} className="border-b last:border-b-0 pb-6 last:pb-0">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                              {post.category}
+                            </span>
+                            <span className="text-sm text-gray-500">{post.date}</span>
+                          </div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h3>
+                          <p className="text-gray-600 mb-3">{post.excerpt}</p>
+                          <Button variant="outline" size="sm">Ler mais</Button>
+                        </article>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Categorias</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <button className="w-full text-left p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                        Hardware (8 documentos)
+                      </button>
+                      <button className="w-full text-left p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                        Software (12 documentos)
+                      </button>
+                      <button className="w-full text-left p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                        Segurança (6 documentos)
+                      </button>
+                      <button className="w-full text-left p-2 rounded-lg hover:bg-blue-50 transition-colors">
+                        Rede (4 documentos)
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Downloads Populares</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Manual VPN</span>
+                        <span className="text-xs text-gray-500">245 downloads</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">Guia Jabber</span>
+                        <span className="text-xs text-gray-500">189 downloads</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm">POP Backup</span>
+                        <span className="text-xs text-gray-500">156 downloads</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Dashboard Section */}
+        {activeSection === 'dashboard' && (
+          <div className="space-y-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Dashboard de TI</h2>
+              <p className="text-lg text-gray-600">
+                Métricas e relatórios do desempenho do setor de Tecnologia da Informação.
+              </p>
+            </div>
+
+            {/* KPIs */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">Chamados Abertos</p>
+                      <p className="text-2xl font-bold text-gray-900">23</p>
+                    </div>
+                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-red-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">Resolvidos Hoje</p>
+                      <p className="text-2xl font-bold text-gray-900">8</p>
+                    </div>
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-green-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">Tempo Médio</p>
+                      <p className="text-2xl font-bold text-gray-900">2.4h</p>
+                    </div>
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-blue-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">Satisfação</p>
+                      <p className="text-2xl font-bold text-gray-900">94%</p>
+                    </div>
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-4 h-4 text-purple-600" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Charts */}
+            <div className="grid lg:grid-cols-2 gap-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Evolução de Chamados</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={chamadosData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="mes" />
+                      <YAxis />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="chamados" stroke="#3b82f6" strokeWidth={2} name="Abertos" />
+                      <Line type="monotone" dataKey="resolvidos" stroke="#10b981" strokeWidth={2} name="Resolvidos" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Chamados por Categoria</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={categoriasData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {categoriasData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Export Buttons */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Exportar Relatórios</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex space-x-4">
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    <Download className="w-4 h-4 mr-2" />
+                    Exportar PDF
+                  </Button>
+                  <Button variant="outline">
+                    <Download className="w-4 h-4 mr-2" />
+                    Exportar Excel
+                  </Button>
+                  <Button variant="outline">
+                    <Download className="w-4 h-4 mr-2" />
+                    Relatório Completo
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </main>
+
+      {/* Chat Volt Integration */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <div className="bg-white rounded-lg shadow-xl border overflow-hidden" style={{width: '350px', height: '500px'}}>
+          <div className="bg-blue-600 text-white p-4 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <MessageCircle className="w-5 h-5" />
+              <span className="font-medium">Chat Volt - Suporte TI</span>
+            </div>
+            <button className="text-white hover:text-gray-200">
+              <span className="sr-only">Minimizar chat</span>
+              ×
+            </button>
+          </div>
+          <iframe
+            src="https://chatvolt.ai/@chat_bot_ti_ses"
+            className="w-full h-full border-0"
+            title="Chat Volt - Suporte TI SES-MG"
+          />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Settings className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-bold">TI SES-MG</span>
+              </div>
+              <p className="text-gray-400 mb-4">
+                Portal de Tecnologia da Informação da Secretaria de Estado de Saúde de Minas Gerais.
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Links Rápidos</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Tutoriais</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Suporte</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Downloads</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Dashboard</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Contato</h3>
+              <div className="space-y-2 text-gray-400">
+                <p>suporteti.ca@saude.mg.gov.br</p>
+                <p>(31) 3916-0123</p>
+                <p>Cidade Administrativa - MG</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>© 2024 Secretaria de Estado de Saúde de Minas Gerais. Todos os direitos reservados.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Portfolio;
